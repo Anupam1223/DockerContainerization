@@ -78,146 +78,143 @@ export const VisualReproducibility = () => {
   );
 };
 
-export const VisualDependencyDiagram = () => {
-  const [mode, setMode] = useState('host');
+export const VisualDependencyDiagram = () => (
+  <div className="w-full h-full min-h-0 bg-white flex items-center justify-center p-3">
+    <svg viewBox="0 0 1000 620" className="w-full h-full" role="img" aria-label="Host machine dependency conflict beside two isolated containers">
+      <defs>
+        <marker id="dep-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#111827" />
+        </marker>
+        <marker id="dep-arrow-red" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#dc2626" />
+        </marker>
+      </defs>
 
-  return (
-    <div className="w-full h-full flex flex-col items-center p-4 bg-slate-900 rounded-xl relative min-h-0">
-      <div className="flex bg-slate-800 p-1 rounded-lg mb-4 z-20 shrink-0">
-        <button type="button" onClick={() => setMode('host')} className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${mode === 'host' ? 'bg-slate-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}>Host Machine (Without Containers)</button>
-        <button type="button" onClick={() => setMode('docker')} className={`px-4 py-2 rounded-md text-sm font-bold transition-all ${mode === 'docker' ? 'bg-blue-600 text-white shadow' : 'text-slate-400 hover:text-white'}`}>With Docker Containers</button>
-      </div>
+      <rect x="12" y="12" width="468" height="596" fill="#e8eef4" stroke="#111827" strokeWidth="2" />
+      <text x="28" y="42" fill="#111827" fontSize="16" fontFamily="ui-sans-serif, system-ui, sans-serif">Host Machine (Without Containers)</text>
 
-      <div className="relative w-full flex-1 min-h-[420px] border-2 border-slate-700 bg-slate-950 rounded-xl overflow-hidden flex items-center justify-center p-4">
-        <div className={`absolute inset-0 transition-opacity duration-500 p-8 flex flex-col items-center ${mode === 'host' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-           <div className="flex w-full justify-around mb-12">
-             <div className="bg-purple-300 text-purple-900 font-bold px-6 py-3 rounded-full z-10 w-32 text-center text-sm shadow-lg">Project B</div>
-             <div className="bg-yellow-200 text-yellow-900 font-bold px-6 py-3 rounded-full z-10 w-32 text-center text-sm shadow-lg">Project A</div>
-           </div>
+      <path d="M 88,118 C 36,170 32,460 78,530" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 402,118 C 454,170 458,460 412,530" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 150,124 L 150,190" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 350,124 L 350,190" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 150,252 C 175,300 195,330 210,362" fill="none" stroke="#dc2626" strokeWidth="1.6" strokeDasharray="5 4" markerEnd="url(#dep-arrow-red)" />
+      <path d="M 350,252 C 325,300 305,330 290,362" fill="none" stroke="#dc2626" strokeWidth="1.6" strokeDasharray="5 4" markerEnd="url(#dep-arrow-red)" />
+      <path d="M 205,420 L 118,528" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 295,420 L 360,528" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
 
-           <div className="flex w-full justify-around mb-16 relative">
-             <div className="bg-sky-300 text-sky-900 font-bold px-4 py-2 rounded z-10 text-sm shadow-md">libraryX v2.0</div>
-             <div className="bg-pink-300 text-pink-900 font-bold px-4 py-2 rounded z-10 text-sm shadow-md">libraryX v1.0</div>
-           </div>
+      <text x="108" y="168" fill="#111827" fontSize="13" fontFamily="ui-sans-serif, system-ui, sans-serif">Needs</text>
+      <text x="292" y="168" fill="#111827" fontSize="13" fontFamily="ui-sans-serif, system-ui, sans-serif">Needs</text>
+      <text x="168" y="312" fill="#dc2626" fontSize="13" fontFamily="ui-sans-serif, system-ui, sans-serif">Conflicts?</text>
+      <text x="292" y="312" fill="#dc2626" fontSize="13" fontFamily="ui-sans-serif, system-ui, sans-serif">Conflicts?</text>
 
-           <div className="bg-slate-200 text-slate-900 font-bold px-6 py-2 rounded-full z-10 mb-12 text-sm shadow-md">System Python</div>
+      <ellipse cx="150" cy="92" rx="62" ry="28" fill="#d8b4fe" stroke="#111827" strokeWidth="1.5" />
+      <text x="150" y="96" textAnchor="middle" fill="#111827" fontSize="14" fontFamily="ui-sans-serif, system-ui, sans-serif">Project B</text>
+      <ellipse cx="350" cy="92" rx="62" ry="28" fill="#fde68a" stroke="#111827" strokeWidth="1.5" />
+      <text x="350" y="96" textAnchor="middle" fill="#111827" fontSize="14" fontFamily="ui-sans-serif, system-ui, sans-serif">Project A</text>
 
-           <div className="flex w-full justify-around mt-auto pb-4">
-             <div className="bg-indigo-300 text-indigo-900 font-bold px-4 py-2 rounded z-10 text-sm shadow-md">PyTorch</div>
-             <div className="bg-orange-300 text-orange-900 font-bold px-4 py-2 rounded z-10 text-sm shadow-md">TensorFlow</div>
-           </div>
+      <rect x="85" y="196" width="130" height="52" fill="#7dd3fc" stroke="#111827" strokeWidth="1.5" />
+      <text x="150" y="226" textAnchor="middle" fill="#111827" fontSize="14" fontFamily="ui-sans-serif, system-ui, sans-serif">libraryX v2.0</text>
+      <rect x="285" y="196" width="130" height="52" fill="#f9a8d4" stroke="#111827" strokeWidth="1.5" />
+      <text x="350" y="226" textAnchor="middle" fill="#111827" fontSize="14" fontFamily="ui-sans-serif, system-ui, sans-serif">libraryX v1.0</text>
 
-           <svg className="absolute inset-0 w-full h-full pointer-events-none">
-              <path d="M 230,80 Q 250,110 210,140" fill="none" stroke="#94a3b8" strokeWidth="2" markerEnd="url(#arrowhead)"/>
-              <text x="235" y="115" className="text-[10px] fill-slate-400">Needs</text>
-              <path d="M 520,80 Q 500,110 540,140" fill="none" stroke="#94a3b8" strokeWidth="2" markerEnd="url(#arrowhead)"/>
-              <text x="500" y="115" className="text-[10px] fill-slate-400">Needs</text>
-              <path d="M 230,170 Q 270,220 350,260" fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5" markerEnd="url(#arrowhead-red)"/>
-              <text x="250" y="220" className="text-[10px] fill-red-500 font-bold">Conflicts?</text>
-              <path d="M 520,170 Q 480,220 400,260" fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="5,5" markerEnd="url(#arrowhead-red)"/>
-              <text x="450" y="220" className="text-[10px] fill-red-500 font-bold">Conflicts?</text>
-              <path d="M 350,290 L 230,360" fill="none" stroke="#94a3b8" strokeWidth="2" markerEnd="url(#arrowhead)"/>
-              <path d="M 400,290 L 520,360" fill="none" stroke="#94a3b8" strokeWidth="2" markerEnd="url(#arrowhead)"/>
-              <path d="M 180,80 Q 100,200 180,360" fill="none" stroke="#94a3b8" strokeWidth="2" markerEnd="url(#arrowhead)"/>
-              <path d="M 570,80 Q 650,200 570,360" fill="none" stroke="#94a3b8" strokeWidth="2" markerEnd="url(#arrowhead)"/>
-           </svg>
-        </div>
+      <rect x="165" y="368" width="170" height="48" rx="18" fill="#ffffff" stroke="#111827" strokeWidth="1.5" />
+      <text x="250" y="397" textAnchor="middle" fill="#111827" fontSize="15" fontFamily="ui-sans-serif, system-ui, sans-serif">System Python</text>
 
-        <div className={`absolute inset-0 transition-opacity duration-500 flex justify-center gap-4 p-4 ${mode === 'docker' ? 'opacity-100 z-10' : 'opacity-0 z-0 pointer-events-none'}`}>
-           <div className="w-[45%] h-full bg-purple-200 border-2 border-purple-400 relative flex flex-col p-4 shadow-lg">
-              <div className="text-center font-bold text-purple-900 mb-6 text-sm">Container B</div>
-              <div className="flex justify-around mb-auto">
-                 <div className="bg-purple-300 text-purple-900 border border-purple-900 font-bold px-4 py-2 rounded-full z-10 text-xs">Project B</div>
-                 <div className="bg-purple-300 text-purple-900 border border-purple-900 font-bold px-4 py-2 rounded-full z-10 text-xs">Python</div>
-              </div>
-              <div className="flex justify-around mt-auto pb-4">
-                 <div className="bg-indigo-300 text-indigo-900 border border-indigo-900 font-bold px-3 py-1.5 rounded z-10 text-xs">PyTorch</div>
-                 <div className="bg-sky-300 text-sky-900 border border-sky-900 font-bold px-3 py-1.5 rounded z-10 text-xs">libraryX v2.0</div>
-              </div>
-              <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                 <path d="M 70,100 Q 70,150 70,230" fill="none" stroke="#4c1d95" strokeWidth="2" markerEnd="url(#arrowhead-purple)"/>
-                 <path d="M 80,100 Q 100,150 170,230" fill="none" stroke="#4c1d95" strokeWidth="2" markerEnd="url(#arrowhead-purple)"/>
-                 <path d="M 220,100 Q 200,150 110,230" fill="none" stroke="#4c1d95" strokeWidth="2" markerEnd="url(#arrowhead-purple)"/>
-                 <path d="M 230,100 Q 230,150 230,230" fill="none" stroke="#4c1d95" strokeWidth="2" markerEnd="url(#arrowhead-purple)"/>
-              </svg>
-           </div>
+      <rect x="62" y="536" width="112" height="46" fill="#bfdbfe" stroke="#111827" strokeWidth="1.5" />
+      <text x="118" y="564" textAnchor="middle" fill="#111827" fontSize="14" fontFamily="ui-sans-serif, system-ui, sans-serif">PyTorch</text>
+      <rect x="292" y="536" width="130" height="46" fill="#fdba74" stroke="#111827" strokeWidth="1.5" />
+      <text x="357" y="564" textAnchor="middle" fill="#111827" fontSize="14" fontFamily="ui-sans-serif, system-ui, sans-serif">TensorFlow</text>
 
-           <div className="w-[45%] h-full bg-yellow-100 border-2 border-yellow-400 relative flex flex-col p-4 shadow-lg">
-              <div className="text-center font-bold text-yellow-900 mb-6 text-sm">Container A</div>
-              <div className="flex justify-around mb-auto">
-                 <div className="bg-yellow-200 text-yellow-900 border border-yellow-900 font-bold px-4 py-2 rounded-full z-10 text-xs">Project A</div>
-                 <div className="bg-yellow-200 text-yellow-900 border border-yellow-900 font-bold px-4 py-2 rounded-full z-10 text-xs">Python</div>
-              </div>
-              <div className="flex justify-around mt-auto pb-4">
-                 <div className="bg-orange-300 text-orange-900 border border-orange-900 font-bold px-3 py-1.5 rounded z-10 text-xs">TensorFlow</div>
-                 <div className="bg-pink-300 text-pink-900 border border-pink-900 font-bold px-3 py-1.5 rounded z-10 text-xs">libraryX v1.0</div>
-              </div>
-              <svg className="absolute inset-0 w-full h-full pointer-events-none">
-                 <path d="M 70,100 Q 70,150 70,230" fill="none" stroke="#713f12" strokeWidth="2" markerEnd="url(#arrowhead-yellow)"/>
-                 <path d="M 80,100 Q 100,150 170,230" fill="none" stroke="#713f12" strokeWidth="2" markerEnd="url(#arrowhead-yellow)"/>
-                 <path d="M 220,100 Q 200,150 110,230" fill="none" stroke="#713f12" strokeWidth="2" markerEnd="url(#arrowhead-yellow)"/>
-                 <path d="M 230,100 Q 230,150 230,230" fill="none" stroke="#713f12" strokeWidth="2" markerEnd="url(#arrowhead-yellow)"/>
-              </svg>
-           </div>
-        </div>
+      <rect x="496" y="12" width="492" height="596" fill="#eef2f6" stroke="#111827" strokeWidth="2" />
+      <text x="742" y="46" textAnchor="middle" fill="#111827" fontSize="16" fontFamily="ui-sans-serif, system-ui, sans-serif">With Docker Containers</text>
 
-        <svg className="absolute w-0 h-0">
-          <defs>
-            <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#94a3b8" /></marker>
-            <marker id="arrowhead-red" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#ef4444" /></marker>
-            <marker id="arrowhead-purple" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#4c1d95" /></marker>
-            <marker id="arrowhead-yellow" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#713f12" /></marker>
-          </defs>
-        </svg>
-      </div>
-    </div>
-  );
-};
+      <rect x="512" y="68" width="228" height="520" fill="#e9d5ff" stroke="#111827" strokeWidth="1.5" />
+      <text x="626" y="98" textAnchor="middle" fill="#111827" fontSize="16" fontFamily="ui-sans-serif, system-ui, sans-serif">Container B</text>
+      <path d="M 568,176 C 545,280 545,420 548,520" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 590,176 C 640,280 680,420 688,520" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 662,176 C 620,300 575,430 580,520" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 690,176 C 705,280 710,420 708,520" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <ellipse cx="575" cy="148" rx="54" ry="26" fill="#ffffff" stroke="#111827" strokeWidth="1.5" />
+      <text x="575" y="153" textAnchor="middle" fill="#111827" fontSize="14" fontFamily="ui-sans-serif, system-ui, sans-serif">Project B</text>
+      <ellipse cx="680" cy="148" rx="48" ry="26" fill="#ffffff" stroke="#111827" strokeWidth="1.5" />
+      <text x="680" y="153" textAnchor="middle" fill="#111827" fontSize="14" fontFamily="ui-sans-serif, system-ui, sans-serif">Python</text>
+      <rect x="524" y="528" width="88" height="42" fill="#bae6fd" stroke="#111827" strokeWidth="1.5" />
+      <text x="568" y="554" textAnchor="middle" fill="#111827" fontSize="13" fontFamily="ui-sans-serif, system-ui, sans-serif">PyTorch</text>
+      <rect x="620" y="528" width="108" height="42" fill="#7dd3fc" stroke="#111827" strokeWidth="1.5" />
+      <text x="674" y="554" textAnchor="middle" fill="#111827" fontSize="12" fontFamily="ui-sans-serif, system-ui, sans-serif">libraryX v2.0</text>
 
-export const VisualConsistencyAndCollab = () => {
-  return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-slate-900 rounded-xl relative overflow-hidden">
-      <div className="text-center font-bold text-slate-400 mb-8 tracking-widest text-sm uppercase">The Single Source of Truth</div>
+      <rect x="752" y="68" width="220" height="520" fill="#fef3c7" stroke="#111827" strokeWidth="1.5" />
+      <text x="862" y="98" textAnchor="middle" fill="#111827" fontSize="16" fontFamily="ui-sans-serif, system-ui, sans-serif">Container A</text>
+      <path d="M 808,176 C 785,280 785,420 788,520" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 830,176 C 880,280 910,420 918,520" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 902,176 C 860,300 815,430 820,520" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <path d="M 928,176 C 940,280 945,420 940,520" fill="none" stroke="#111827" strokeWidth="1.6" markerEnd="url(#dep-arrow)" />
+      <ellipse cx="812" cy="148" rx="54" ry="26" fill="#ffffff" stroke="#111827" strokeWidth="1.5" />
+      <text x="812" y="153" textAnchor="middle" fill="#111827" fontSize="14" fontFamily="ui-sans-serif, system-ui, sans-serif">Project A</text>
+      <ellipse cx="918" cy="148" rx="48" ry="26" fill="#ffffff" stroke="#111827" strokeWidth="1.5" />
+      <text x="918" y="153" textAnchor="middle" fill="#111827" fontSize="14" fontFamily="ui-sans-serif, system-ui, sans-serif">Python</text>
+      <rect x="764" y="528" width="92" height="42" fill="#fdba74" stroke="#111827" strokeWidth="1.5" />
+      <text x="810" y="554" textAnchor="middle" fill="#111827" fontSize="12" fontFamily="ui-sans-serif, system-ui, sans-serif">TensorFlow</text>
+      <rect x="864" y="528" width="96" height="42" fill="#f9a8d4" stroke="#111827" strokeWidth="1.5" />
+      <text x="912" y="554" textAnchor="middle" fill="#111827" fontSize="12" fontFamily="ui-sans-serif, system-ui, sans-serif">libraryX v1.0</text>
+    </svg>
+  </div>
+);
 
-      <div className="w-full h-72 relative flex items-center justify-center">
-         <div className="absolute z-20 flex flex-col items-center top-[10%]">
-            <div className="bg-blue-600 px-6 py-4 rounded-xl border-2 border-blue-400 shadow-[0_0_30px_rgba(37,99,235,0.4)] flex flex-col items-center">
-               <IconDocker className="w-10 h-10 text-white mb-2" />
-               <div className="text-white font-bold text-sm">Container Image</div>
-               <div className="text-blue-200 text-[10px] bg-blue-900/50 px-2 py-0.5 mt-1 rounded font-mono">Built from Dockerfile</div>
-            </div>
-         </div>
+export const VisualConsistencyAndCollab = () => (
+  <div className="w-full h-full min-h-0 bg-slate-900 flex items-center justify-center p-4">
+    <svg viewBox="0 0 900 480" className="w-full h-full" role="img" aria-label="One container image feeding local development, CI, and cloud deploy">
+      <defs>
+        <marker id="truth-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="#818cf8" />
+        </marker>
+        <filter id="truth-glow" x="-40%" y="-40%" width="180%" height="180%">
+          <feDropShadow dx="0" dy="0" stdDeviation="8" floodColor="#3b82f6" floodOpacity="0.55" />
+        </filter>
+      </defs>
 
-         <svg className="absolute inset-0 w-full h-full pointer-events-none z-10">
-            <path d="M 370,120 Q 200,120 200,200" fill="none" stroke="#6366f1" strokeWidth="2" strokeDasharray="4,4" className="path-flow"/>
-            <path d="M 370,120 Q 370,160 370,200" fill="none" stroke="#6366f1" strokeWidth="2" strokeDasharray="4,4" className="path-flow"/>
-            <path d="M 370,120 Q 540,120 540,200" fill="none" stroke="#6366f1" strokeWidth="2" strokeDasharray="4,4" className="path-flow"/>
-         </svg>
+      <text x="450" y="36" textAnchor="middle" fill="#94a3b8" fontSize="14" fontWeight="700" letterSpacing="3" fontFamily="ui-sans-serif, system-ui, sans-serif">THE SINGLE SOURCE OF TRUTH</text>
 
-         <div className="absolute bottom-[10%] w-full flex justify-between px-8 z-20">
-            <div className="flex flex-col items-center">
-               <div className="w-16 h-16 bg-slate-800 rounded-lg border border-slate-600 flex items-center justify-center mb-2 shadow-lg"><IconLaptop className="w-8 h-8 text-slate-300"/></div>
-               <div className="text-white text-xs font-bold text-center">Local Dev<br/><span className="text-slate-400 font-normal">macOS/Windows</span></div>
-            </div>
+      <path d="M 450,214 C 450,250 160,268 160,318" fill="none" stroke="#818cf8" strokeWidth="2.5" strokeDasharray="6 6" className="path-flow" markerEnd="url(#truth-arrow)" />
+      <path d="M 450,214 L 450,318" fill="none" stroke="#818cf8" strokeWidth="2.5" strokeDasharray="6 6" className="path-flow" markerEnd="url(#truth-arrow)" />
+      <path d="M 450,214 C 450,250 740,268 740,318" fill="none" stroke="#818cf8" strokeWidth="2.5" strokeDasharray="6 6" className="path-flow" markerEnd="url(#truth-arrow)" />
 
-            <div className="flex flex-col items-center">
-               <div className="w-16 h-16 bg-slate-800 rounded-lg border border-slate-600 flex items-center justify-center mb-2 shadow-lg"><IconServer className="w-8 h-8 text-slate-300"/></div>
-               <div className="text-white text-xs font-bold text-center">CI/CD Tests<br/><span className="text-slate-400 font-normal">Linux Servers</span></div>
-            </div>
+      <g filter="url(#truth-glow)">
+        <rect x="325" y="72" width="250" height="142" rx="16" fill="#2563eb" stroke="#60a5fa" strokeWidth="2" />
+      </g>
+      <path d="M 430 108 h18 v-8 h22 v28 h-40 z" fill="#ffffff" />
+      <circle cx="478" cy="112" r="8" fill="none" stroke="#ffffff" strokeWidth="3" />
+      <text x="450" y="158" textAnchor="middle" fill="#ffffff" fontSize="16" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif">Container Image</text>
+      <rect x="372" y="172" width="156" height="22" rx="4" fill="#1e3a8a" />
+      <text x="450" y="187" textAnchor="middle" fill="#bfdbfe" fontSize="11" fontFamily="ui-monospace, monospace">Built from Dockerfile</text>
 
-            <div className="flex flex-col items-center">
-               <div className="w-16 h-16 bg-slate-800 rounded-lg border border-slate-600 flex items-center justify-center mb-2 shadow-lg relative overflow-hidden">
-                 <IconBox className="w-6 h-6 text-blue-400 absolute top-2 left-2"/>
-                 <IconBox className="w-6 h-6 text-blue-400 absolute bottom-2 right-2"/>
-                 <IconBox className="w-6 h-6 text-blue-400 absolute top-2 right-2"/>
-               </div>
-               <div className="text-white text-xs font-bold text-center">Cloud Deploy<br/><span className="text-slate-400 font-normal">Kubernetes / ECS</span></div>
-            </div>
-         </div>
-      </div>
-    </div>
-  );
-};
+      <g>
+        <rect x="124" y="326" width="72" height="72" rx="10" fill="#1e293b" stroke="#475569" />
+        <rect x="142" y="342" width="36" height="24" rx="3" fill="none" stroke="#cbd5e1" strokeWidth="2" />
+        <path d="M 136 374 h56" stroke="#cbd5e1" strokeWidth="2" />
+        <text x="160" y="422" textAnchor="middle" fill="#ffffff" fontSize="13" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif">Local Dev</text>
+        <text x="160" y="440" textAnchor="middle" fill="#94a3b8" fontSize="12" fontFamily="ui-sans-serif, system-ui, sans-serif">macOS/Windows</text>
+      </g>
+      <g>
+        <rect x="414" y="326" width="72" height="72" rx="10" fill="#1e293b" stroke="#475569" />
+        <rect x="432" y="342" width="36" height="14" rx="2" fill="none" stroke="#cbd5e1" strokeWidth="2" />
+        <rect x="432" y="360" width="36" height="14" rx="2" fill="none" stroke="#cbd5e1" strokeWidth="2" />
+        <circle cx="458" cy="349" r="1.5" fill="#cbd5e1" />
+        <circle cx="458" cy="367" r="1.5" fill="#cbd5e1" />
+        <text x="450" y="422" textAnchor="middle" fill="#ffffff" fontSize="13" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif">CI/CD Tests</text>
+        <text x="450" y="440" textAnchor="middle" fill="#94a3b8" fontSize="12" fontFamily="ui-sans-serif, system-ui, sans-serif">Linux Servers</text>
+      </g>
+      <g>
+        <rect x="704" y="326" width="72" height="72" rx="10" fill="#1e293b" stroke="#475569" />
+        <rect x="718" y="340" width="16" height="16" rx="2" fill="none" stroke="#60a5fa" strokeWidth="2" />
+        <rect x="740" y="348" width="16" height="16" rx="2" fill="none" stroke="#60a5fa" strokeWidth="2" />
+        <rect x="728" y="366" width="16" height="16" rx="2" fill="none" stroke="#60a5fa" strokeWidth="2" />
+        <text x="740" y="422" textAnchor="middle" fill="#ffffff" fontSize="13" fontWeight="700" fontFamily="ui-sans-serif, system-ui, sans-serif">Cloud Deploy</text>
+        <text x="740" y="440" textAnchor="middle" fill="#94a3b8" fontSize="12" fontFamily="ui-sans-serif, system-ui, sans-serif">Kubernetes / ECS</text>
+      </g>
+    </svg>
+  </div>
+);
 
 export const VisualImageVsContainer = () => {
   const [containers, setContainers] = useState([]);

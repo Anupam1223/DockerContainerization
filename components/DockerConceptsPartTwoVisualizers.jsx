@@ -100,6 +100,7 @@ export function VisualBuildContext() {
 }
 
 const INSTRUCTIONS = [
+  { id: 'FROM', code: 'FROM python:3.9-slim', desc: 'Every Dockerfile starts here. FROM chooses the base image the rest of the file builds on.' },
   { id: 'RUN', code: 'RUN pip install -r req.txt', desc: 'Executes commands IN A NEW LAYER during the build process. Used for installing packages.' },
   { id: 'COPY', code: 'COPY . /app', desc: 'Moves files from the host (build context) into the image filesystem.' },
   { id: 'WORKDIR', code: 'WORKDIR /app', desc: "Sets the active directory. Creates it if it doesn't exist. Safer than using RUN cd /app." },
@@ -108,7 +109,7 @@ const INSTRUCTIONS = [
   { id: 'ENTRYPOINT', code: 'ENTRYPOINT ["python"]', desc: 'Configures the container to run as an executable. Commands passed via docker run are APPENDED.' },
 ];
 
-export function VisualDockerfileInstructions({ initial = 'CMD' }) {
+export function VisualDockerfileInstructions({ initial = 'FROM' }) {
   const [activeInstruction, setActiveInstruction] = useState(initial);
   const active = INSTRUCTIONS.find((item) => item.id === activeInstruction) || INSTRUCTIONS[0];
 
@@ -136,6 +137,38 @@ export function VisualDockerfileInstructions({ initial = 'CMD' }) {
           <p className="text-slate-300 text-sm mb-8 leading-relaxed">{active.desc}</p>
 
           <div className="flex-1 bg-slate-900 border border-slate-700 rounded-lg p-4 flex flex-col justify-center items-center relative overflow-hidden min-h-[140px]">
+            {activeInstruction === 'FROM' && (
+              <div className="w-full flex flex-col items-center gap-3 animate-[fadeIn_0.3s_ease-out]">
+                <div className="text-xs text-slate-400 font-bold uppercase">Base image</div>
+                <div className="w-full max-w-sm flex flex-col-reverse gap-1.5">
+                  <div className="rounded-lg bg-blue-600 px-3 py-3 text-center text-sm font-bold text-white shadow-[0_0_18px_rgba(37,99,235,0.45)]">python:3.9-slim</div>
+                  <div className="rounded-lg border border-dashed border-slate-600 px-3 py-2 text-center text-[11px] text-slate-500">later layers sit on this</div>
+                </div>
+              </div>
+            )}
+
+            {activeInstruction === 'RUN' && (
+              <div className="w-full max-w-sm flex flex-col-reverse gap-1.5 animate-[fadeIn_0.3s_ease-out]">
+                <div className="rounded-lg bg-slate-800 px-3 py-2 text-center text-[11px] text-slate-400">python:3.9-slim</div>
+                <div className="rounded-lg bg-indigo-600 px-3 py-3 text-center text-xs font-bold text-white animate-[slideDown_0.5s_ease-out]">new layer: pip install</div>
+              </div>
+            )}
+
+            {activeInstruction === 'COPY' && (
+              <div className="w-full flex items-center justify-center gap-6 animate-[fadeIn_0.3s_ease-out]">
+                <div className="rounded-lg bg-slate-800 px-3 py-2 font-mono text-xs text-slate-300">requirements.txt</div>
+                <IconArrowRight className="w-4 h-4 text-slate-500" />
+                <div className="rounded-lg border border-teal-500 bg-teal-950/50 px-3 py-2 font-mono text-xs text-teal-200">/app/requirements.txt</div>
+              </div>
+            )}
+
+            {activeInstruction === 'WORKDIR' && (
+              <div className="text-center animate-[fadeIn_0.3s_ease-out]">
+                <div className="font-mono text-sm text-slate-500 line-through">/</div>
+                <div className="mt-2 font-mono text-lg font-bold text-indigo-300">/app</div>
+              </div>
+            )}
+
             {activeInstruction === 'CMD' && (
               <div className="w-full flex flex-col gap-4 animate-[fadeIn_0.3s_ease-out]">
                 <div className="text-xs text-slate-400 text-center font-bold uppercase">Overriding CMD</div>
@@ -183,6 +216,7 @@ export function VisualDockerfileInstructions({ initial = 'CMD' }) {
   );
 }
 
+export const VisualInstructionFrom = () => <VisualDockerfileInstructions initial="FROM" />;
 export const VisualInstructionRun = () => <VisualDockerfileInstructions initial="RUN" />;
 export const VisualInstructionCopy = () => <VisualDockerfileInstructions initial="COPY" />;
 export const VisualInstructionWorkdir = () => <VisualDockerfileInstructions initial="WORKDIR" />;
@@ -253,7 +287,7 @@ export function VisualPushPullLifecycle() {
 
   return (
     <div className="w-full h-full min-h-0 flex flex-col p-6 bg-slate-900 relative overflow-hidden">
-      <div className="flex justify-between items-center mb-6">
+      <div className="flex justify-between items-center mb-6 pr-36">
         <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Distribution Workflow</div>
         <button type="button" onClick={step === 0 || step === 4 ? runFlow : undefined} className={`px-4 py-2 rounded text-xs font-bold transition-all ${step === 0 || step === 4 ? 'bg-blue-600 text-white hover:bg-blue-500 shadow-lg' : 'bg-slate-800 text-slate-500 cursor-not-allowed'}`}>
           {step === 0 ? 'Start Workflow' : step === 4 ? 'Restart' : 'Processing...'}

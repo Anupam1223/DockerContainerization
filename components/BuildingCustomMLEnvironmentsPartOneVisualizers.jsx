@@ -118,7 +118,7 @@ export function VisualBuildCache() {
 
   return (
     <div className="w-full h-full min-h-0 flex flex-col p-4 md:p-6 bg-slate-900 relative overflow-auto">
-      <div className="flex justify-between items-center mb-6 gap-3 flex-wrap">
+      <div className="flex justify-between items-center mb-6 gap-3 flex-wrap pr-36">
         <div className="text-slate-400 font-bold uppercase tracking-widest text-xs">Build Cache Optimization</div>
         <div className="flex gap-2 flex-wrap">
           <button type="button" onClick={() => runSimulation('code')} disabled={simState === 'building'} className="px-4 py-2 bg-blue-600 hover:bg-blue-500 disabled:opacity-50 text-white text-xs font-bold rounded transition-all shadow-lg">Change App Code</button>
@@ -394,28 +394,27 @@ export function VisualDependencyPinning() {
   );
 }
 
+const PIP_STEPS = [
+  'Ready to build',
+  '1. Pip downloads the wheels',
+  '2. The libraries are installed',
+  '3. The wheel cache stays, or is deleted',
+];
+
 export function VisualPipCache() {
   const [step, setStep] = useState(0);
-  const { after, clear } = useTimers();
 
-  const runSimulation = () => {
-    clear();
-    setStep(1);
-    after(1500, () => setStep(2));
-    after(3000, () => setStep(3));
-  };
-
-  const reset = () => {
-    clear();
-    setStep(0);
-  };
+  const advance = () => setStep((current) => (current >= 3 ? 0 : current + 1));
 
   return (
     <div className="w-full h-full min-h-0 flex flex-col p-4 md:p-6 bg-slate-900 relative overflow-auto">
-      <div className="flex justify-between items-center mb-8 gap-3">
-        <div className="text-slate-400 font-bold uppercase tracking-widest text-xs">--no-cache-dir Optimization</div>
-        <button type="button" onClick={step === 0 ? runSimulation : step === 3 ? reset : undefined} className={`px-4 py-2 rounded text-xs font-bold transition-all ${step === 0 || step === 3 ? 'bg-blue-600 text-white shadow-lg hover:bg-blue-500' : 'bg-slate-700 text-slate-500'}`}>
-          {step === 0 ? 'Build Image' : step === 3 ? 'Reset' : 'Building...'}
+      <div className="flex justify-between items-center mb-8 gap-3 pr-36">
+        <div>
+          <div className="text-slate-400 font-bold uppercase tracking-widest text-xs">--no-cache-dir Optimization</div>
+          <div className="text-[11px] text-slate-500 mt-1">{PIP_STEPS[step]}</div>
+        </div>
+        <button type="button" onClick={advance} className="px-4 py-2 rounded text-xs font-bold bg-blue-600 text-white shadow-lg hover:bg-blue-500 shrink-0">
+          {step === 0 ? 'Build Image' : step === 3 ? 'Reset' : 'Next step'}
         </button>
       </div>
 

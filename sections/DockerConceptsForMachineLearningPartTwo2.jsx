@@ -4,6 +4,7 @@ import CodeBlock from '../components/CodeBlock';
 import {
   VisualBuildContext,
   VisualDockerfileInstructions,
+  VisualInstructionFrom,
   VisualInstructionCmd,
   VisualInstructionCopy,
   VisualInstructionExpose,
@@ -59,7 +60,7 @@ const slides = [
     id: 'from',
     title: 'FROM',
     subtitle: 'Every Dockerfile starts here',
-    Visual: VisualDockerfileInstructions,
+    Visual: VisualInstructionFrom,
     content: (
       <div className="space-y-3 text-sm text-gray-300 leading-relaxed">
         <p>

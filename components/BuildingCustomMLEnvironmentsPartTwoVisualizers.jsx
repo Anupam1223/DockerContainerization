@@ -135,7 +135,7 @@ export function VisualCondaDockerfile() {
 
   return (
     <div className="w-full h-full min-h-0 flex flex-col p-4 md:p-6 bg-slate-900 relative overflow-hidden">
-      <div className="flex justify-between items-center mb-4 gap-3">
+      <div className="flex justify-between items-center mb-4 gap-3 pr-36">
         <div className="text-slate-400 font-bold uppercase tracking-widest text-xs">Conda Build Execution</div>
         <div className="flex gap-2">
           <button type="button" onClick={() => setStep((n) => Math.max(0, n - 1))} disabled={step === 0} className="px-3 py-1.5 bg-slate-800 text-white text-xs rounded hover:bg-slate-700 disabled:opacity-50">Prev</button>
