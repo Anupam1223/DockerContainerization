@@ -239,7 +239,117 @@ export const VisualRunConfig = () => <VisualDockerRunOrchestrator />;
 export const VisualDetached = () => <VisualDockerRunOrchestrator initialLifecycle="detached" />;
 export const VisualResources = () => <VisualDockerRunOrchestrator />;
 export const VisualLifecycle = () => <VisualDockerRunOrchestrator initialLifecycle="rm" />;
-export const VisualDaemonFlow = () => <VisualDockerRunOrchestrator />;
+const RUN_FLOW_STEPS = [
+  { nodes: ['terminal', 'daemon'], text: 'Sends run command: image name, volumes, env vars, container cmd' },
+  { nodes: ['daemon', 'terminal'], text: 'Streams Logs (if attached)' },
+  { nodes: ['dirs', 'daemon'], text: 'Bind Mount Request (-v)' },
+  { nodes: ['volumes', 'daemon'], text: 'Volume Mount Request (-v)' },
+  { nodes: ['daemon', 'image'], text: 'Loads Image' },
+  { nodes: ['image', 'fs'], text: 'Provides Base Layers' },
+  { nodes: ['daemon', 'fs'], text: 'Creates Container FS' },
+  { nodes: ['daemon', 'output'], text: 'Mounts Output' },
+  { nodes: ['daemon', 'env'], text: 'Injects Env Vars (-e)' },
+  { nodes: ['daemon', 'data'], text: 'Mounts Data' },
+  { nodes: ['daemon', 'script'], text: 'Starts Process (ENTRYPOINT/CMD or override)' },
+  { nodes: ['script', 'fs'], text: 'Reads/Writes Temp Files' },
+  { nodes: ['script', 'output'], text: 'Writes Models/Logs' },
+  { nodes: ['script', 'env'], text: 'Reads Config' },
+  { nodes: ['script', 'data'], text: 'Reads Data' },
+  { nodes: ['script', 'daemon'], text: 'STDOUT/STDERR' },
+];
+
+function RunFlowBox({ on, className, title, detail }) {
+  return (
+    <div className={`rounded-lg border px-2 py-1.5 leading-snug ${on ? 'ring-2 ring-sky-700 border-sky-800 shadow-md' : 'border-slate-500'} ${className}`}>
+      <div className="text-[11px] font-bold text-slate-900">{title}</div>
+      {detail && <div className="text-[10px] text-slate-700 mt-0.5">{detail}</div>}
+    </div>
+  );
+}
+
+export function VisualDaemonFlow() {
+  const [step, setStep] = useState(0);
+  const [playing, setPlaying] = useState(false);
+  const stepRef = useRef(0);
+  const playRef = useRef(null);
+  const active = RUN_FLOW_STEPS[step];
+  const lit = (id) => active.nodes.includes(id);
+
+  useEffect(() => () => clearInterval(playRef.current), []);
+
+  const go = (n) => {
+    clearInterval(playRef.current);
+    setPlaying(false);
+    const next = Math.max(0, Math.min(RUN_FLOW_STEPS.length - 1, n));
+    stepRef.current = next;
+    setStep(next);
+  };
+
+  const play = () => {
+    clearInterval(playRef.current);
+    if (stepRef.current >= RUN_FLOW_STEPS.length - 1) go(0);
+    setPlaying(true);
+    playRef.current = setInterval(() => {
+      if (stepRef.current >= RUN_FLOW_STEPS.length - 1) {
+        clearInterval(playRef.current);
+        setPlaying(false);
+        return;
+      }
+      stepRef.current += 1;
+      setStep(stepRef.current);
+    }, 1200);
+  };
+
+  return (
+    <div className="w-full h-full min-h-0 flex flex-col bg-slate-900 overflow-auto p-3">
+      <div className="rounded-xl bg-white p-3 flex flex-col gap-3">
+        <div className="grid grid-cols-1 xl:grid-cols-[190px_minmax(0,1fr)] gap-3">
+          <div className="rounded-lg border border-slate-300 bg-slate-100 p-2 flex flex-col gap-2">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-slate-500">Host System</div>
+            <RunFlowBox on={lit('dirs')} className="bg-sky-100" title="Local Data / Output Dirs" detail="Bind Mount Request (-v)" />
+            <RunFlowBox on={lit('terminal')} className="bg-white" title="Terminal (`docker run ...`)" detail="Sends the run command · receives logs" />
+            <RunFlowBox on={lit('volumes')} className="bg-violet-100" title="Docker Volumes" detail="Volume Mount Request (-v)" />
+          </div>
+
+          <div className="flex flex-col gap-2 min-w-0">
+            <div className="rounded-lg border border-slate-300 bg-slate-200 p-2">
+              <div className="text-[10px] font-bold uppercase tracking-wide text-slate-500 text-center mb-2">Docker Engine</div>
+              <div className="grid grid-cols-1 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] gap-2 items-center">
+                <RunFlowBox on={lit('daemon')} className="bg-white" title="Docker Daemon" detail="Creates the container, mounts, and env" />
+                <div className={`text-[10px] font-bold text-center px-1 ${lit('daemon') && lit('image') ? 'text-sky-800' : 'text-slate-500'}`}>Loads Image →</div>
+                <RunFlowBox on={lit('image')} className="bg-emerald-100" title="ML Training Image" detail="Dockerfile Definition · Provides Base Layers" />
+              </div>
+            </div>
+
+            <div className="rounded-lg border border-amber-400 bg-amber-100 p-2">
+              <div className="text-[11px] font-bold text-amber-950 mb-2">Running Container</div>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <RunFlowBox on={lit('script')} className="bg-emerald-200" title="python train.py --data-dir /app/data ..." detail="ENTRYPOINT / CMD, or the override command" />
+                <div className="flex flex-col gap-2">
+                  <RunFlowBox on={lit('fs')} className="bg-white" title="Container Filesystem" detail="Image Layers + RW Layer" />
+                  <RunFlowBox on={lit('output')} className="bg-orange-100" title="Mounted Output" detail="/app/output" />
+                  <RunFlowBox on={lit('env')} className="bg-sky-100" title="Environment Vars" detail="e.g., LR=0.01 · injected with -e" />
+                  <RunFlowBox on={lit('data')} className="bg-sky-200" title="Mounted Data" detail="/app/data" />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="mt-3 rounded-lg border border-sky-800 bg-slate-950 px-3 py-2 text-center">
+        <div className="text-[10px] uppercase tracking-wide text-slate-500">Step {step + 1} of {RUN_FLOW_STEPS.length}</div>
+        <div className="text-sm font-semibold text-sky-200 mt-0.5">{active.text}</div>
+      </div>
+
+      <div className="mt-2 flex flex-wrap gap-2">
+        <button type="button" onClick={() => go(step - 1)} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-200">Previous</button>
+        <button type="button" onClick={() => go(step + 1)} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-slate-800 text-slate-200">Next</button>
+        <button type="button" onClick={playing ? () => go(step) : play} className="px-3 py-1.5 rounded-lg text-xs font-bold bg-sky-600 text-white">{playing ? 'Pause' : 'Play flow'}</button>
+      </div>
+    </div>
+  );
+}
 
 export function VisualLogPersistenceFlow({ initialStorage = 'volume' }) {
   const [storageMode, setStorageMode] = useState(initialStorage);

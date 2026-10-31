@@ -123,6 +123,83 @@ export function VisualStorageDiagram() {
   );
 }
 
+function MapFolder({ x, y, label, file, on, w = 128 }) {
+  const nx = Number(x);
+  const ny = Number(y);
+  const nw = Number(w);
+  return (
+    <g>
+      <path d={`M ${nx} ${ny + 10} h 26 v -10 h 10 l 8 10`} fill={on ? '#38bdf8' : '#075985'} />
+      <rect x={nx} y={ny + 10} width={nw} height="52" rx="8" fill={on ? '#082f49' : '#020617'} stroke={on ? '#7dd3fc' : '#0369a1'} strokeWidth="2" />
+      <text x={nx + nw / 2} y={file ? ny + 32 : ny + 40} textAnchor="middle" fill={on ? '#f8fafc' : '#bae6fd'} fontSize="12" fontWeight="700">{label}</text>
+      {file && (
+        <text x={nx + nw / 2} y={ny + 50} textAnchor="middle" fill={on ? '#67e8f9' : '#64748b'} fontSize="9" fontFamily="ui-monospace, monospace">{file}</text>
+      )}
+    </g>
+  );
+}
+
+export function VisualBindMapDiagram() {
+  const [focus, setFocus] = useState('both');
+  const srcOn = focus !== 'data';
+  const dataOn = focus !== 'src';
+
+  return (
+    <div className="w-full h-full min-h-0 flex flex-col bg-slate-900 overflow-auto p-4">
+      <svg viewBox="0 0 820 460" className="w-full flex-1 min-h-[280px]">
+        <rect x="16" y="12" width="500" height="188" rx="14" fill="#0f172a" stroke="#334155" strokeWidth="2" />
+        <text x="266" y="36" textAnchor="middle" fill="#94a3b8" fontSize="13" fontWeight="700">Host Machine</text>
+        <MapFolder x="40" y="78" label="my_ml_project" on={srcOn || dataOn} />
+        <MapFolder x="300" y="52" label="src" file="train.py" on={srcOn} />
+        <MapFolder x="300" y="124" label="data" file="features.csv" on={dataOn} />
+        <path d="M 168 114 L 300 88" fill="none" stroke={srcOn ? '#38bdf8' : '#334155'} strokeWidth="2" />
+        <path d="M 168 130 L 300 160" fill="none" stroke={dataOn ? '#38bdf8' : '#334155'} strokeWidth="2" />
+
+        <MapFolder x="8" y="248" label="Host Filesystem" on w="168" />
+        <MapFolder x="8" y="338" label="Container Filesystem" on w="168" />
+
+        <rect x="250" y="230" width="546" height="210" rx="14" fill="#111827" stroke="#334155" strokeWidth="2" />
+        <text x="523" y="256" textAnchor="middle" fill="#94a3b8" fontSize="13" fontWeight="700">Container</text>
+        <MapFolder x="280" y="310" label="app" on={srcOn || dataOn} />
+        <MapFolder x="620" y="278" label="src" file="/app/src" on={srcOn} />
+        <MapFolder x="620" y="352" label="data" file="/app/data" on={dataOn} />
+        <path d="M 408 346 L 620 314" fill="none" stroke={srcOn ? '#38bdf8' : '#334155'} strokeWidth="2" />
+        <path d="M 408 362 L 620 388" fill="none" stroke={dataOn ? '#38bdf8' : '#334155'} strokeWidth="2" />
+
+        <path
+          d="M 428 78 C 560 40, 700 160, 620 304"
+          fill="none"
+          stroke={srcOn ? '#2dd4bf' : '#1e293b'}
+          strokeWidth="2"
+          strokeDasharray="7 6"
+          className={srcOn ? 'path-flow' : undefined}
+        />
+        <path
+          d="M 428 150 C 590 150, 740 240, 620 378"
+          fill="none"
+          stroke={dataOn ? '#fbbf24' : '#1e293b'}
+          strokeWidth="2"
+          strokeDasharray="7 6"
+          className={dataOn ? 'path-flow' : undefined}
+        />
+        <text x="560" y="70" fill={srcOn ? '#5eead4' : '#475569'} fontSize="11">bind mount</text>
+        <text x="600" y="188" fill={dataOn ? '#fcd34d' : '#475569'} fontSize="11">bind mount</text>
+      </svg>
+
+      <div className="text-center text-[11px] text-slate-300 pb-2">
+        {srcOn && <span className="font-mono text-teal-200">my_ml_project/src → /app/src</span>}
+        {srcOn && dataOn && <span className="mx-2 text-slate-600">·</span>}
+        {dataOn && <span className="font-mono text-amber-200">my_ml_project/data → /app/data</span>}
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <button type="button" onClick={() => setFocus('src')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${focus === 'src' ? 'bg-teal-600 text-white' : 'bg-slate-800 text-slate-400'}`}>Mount src</button>
+        <button type="button" onClick={() => setFocus('data')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${focus === 'data' ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>Mount data</button>
+        <button type="button" onClick={() => setFocus('both')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${focus === 'both' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-400'}`}>Both bind mounts</button>
+      </div>
+    </div>
+  );
+}
+
 export function VisualBindMount() {
   const [code, setCode] = useState('print("Hello World")');
   const [output, setOutput] = useState('');
@@ -186,6 +263,88 @@ export function VisualBindMount() {
             </div>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+function EngineContainer({ x, y, w, h, label, fill, on }) {
+  return (
+    <g opacity={on ? 1 : 0.28}>
+      <rect x={x} y={y} width={w} height={h} rx="3" fill={fill} stroke="#0f172a" strokeWidth="1.5" />
+      <text x={x + w / 2} y={y + h / 2 + 5} textAnchor="middle" fill="#0f172a" fontSize="14" fontWeight="700">{label}</text>
+    </g>
+  );
+}
+
+function HostFolder({ x, y, label, w, active }) {
+  return (
+    <g>
+      <path d={`M ${x} ${y + 12} h 28 v -12 h 12 l 10 12`} fill={active ? '#7dd3fc' : '#9ca3af'} />
+      <rect x={x} y={y + 12} width={w} height="52" rx="3" fill={active ? '#e0f2fe' : '#d1d5db'} stroke={active ? '#0284c7' : '#6b7280'} strokeWidth="1.5" />
+      <text x={x + w / 2} y={y + 43} textAnchor="middle" fill="#1f2937" fontSize="13" fontWeight="650">{label}</text>
+    </g>
+  );
+}
+
+export function VisualVolumeEngineDiagram() {
+  const [focus, setFocus] = useState('both');
+  const inferenceOn = focus !== 'training';
+  const trainingOn = focus !== 'inference';
+  const stored = inferenceOn || trainingOn;
+
+  return (
+    <div className="w-full h-full min-h-0 flex flex-col bg-slate-900 overflow-auto p-4">
+      <svg viewBox="0 0 800 470" className="w-full flex-1 min-h-[300px]">
+        <defs>
+          <marker id="vol-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M 0 0 L 8 4 L 0 8 Z" fill="#f8fafc" />
+          </marker>
+          <marker id="vol-arrow-dim" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M 0 0 L 8 4 L 0 8 Z" fill="#475569" />
+          </marker>
+          <marker id="store-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M 0 0 L 8 4 L 0 8 Z" fill="#94a3b8" />
+          </marker>
+        </defs>
+
+        <rect x="150" y="8" width="500" height="288" rx="4" fill="none" stroke="#94a3b8" strokeWidth="1.5" strokeDasharray="5 4" />
+        <text x="400" y="28" textAnchor="middle" fill="#cbd5e1" fontSize="13">Docker Engine</text>
+
+        <EngineContainer x={185} y={46} w={190} h={58} label="Inference Container" fill="#fde68a" on={inferenceOn} />
+        <EngineContainer x={425} y={46} w={190} h={58} label="Training Container" fill="#99f6e4" on={trainingOn} />
+
+        <path d="M 280 104 L 352 164" fill="none" stroke={inferenceOn ? '#f8fafc' : '#334155'} strokeWidth="1.6" markerEnd={inferenceOn ? 'url(#vol-arrow)' : 'url(#vol-arrow-dim)'} />
+        <path d="M 520 104 L 448 164" fill="none" stroke={trainingOn ? '#f8fafc' : '#334155'} strokeWidth="1.6" markerEnd={trainingOn ? 'url(#vol-arrow)' : 'url(#vol-arrow-dim)'} />
+        <text x="292" y="140" textAnchor="middle" fill={inferenceOn ? '#f8fafc' : '#475569'} fontSize="12" fontFamily="ui-monospace, monospace" stroke="#020617" strokeWidth="3" paintOrder="stroke">/model_in_cont</text>
+        <text x="508" y="140" textAnchor="middle" fill={trainingOn ? '#f8fafc' : '#475569'} fontSize="12" fontFamily="ui-monospace, monospace" stroke="#020617" strokeWidth="3" paintOrder="stroke">/data_in_cont</text>
+
+        <path d="M 292 188 L 292 262 A 108 22 0 0 0 508 262 L 508 188" fill={stored ? '#38bdf8' : '#0c4a6e'} />
+        <ellipse cx="400" cy="262" rx="108" ry="22" fill={stored ? '#0284c7' : '#082f49'} />
+        <ellipse cx="400" cy="188" rx="108" ry="22" fill={stored ? '#7dd3fc' : '#0369a1'} stroke="#e0f2fe" strokeWidth="1.5" />
+        <text x="400" y="214" textAnchor="middle" fill="#0f172a" fontSize="15" fontWeight="700">my-ml-data</text>
+        <text x="400" y="232" textAnchor="middle" fill="#0f172a" fontSize="12">(Docker Volume)</text>
+
+        <path d="M 400 284 L 420 386" fill="none" stroke="#94a3b8" strokeWidth="1.6" strokeDasharray="5 4" markerEnd="url(#store-arrow)" className={stored ? 'path-flow' : undefined} />
+        <text x="436" y="324" fill="#e2e8f0" fontSize="12">Stores data here</text>
+        <text x="436" y="342" fill="#94a3b8" fontSize="11">(Location managed by Docker)</text>
+
+        <rect x="160" y="356" width="480" height="104" fill="#f3f4f6" stroke="#d1d5db" strokeWidth="1.5" />
+        <text x="400" y="376" textAnchor="middle" fill="#374151" fontSize="13">Host Machine Filesystem</text>
+        <HostFolder x={178} y={386} w={200} label="Other Host Files" active={false} />
+        <HostFolder x={398} y={386} w={220} label="Docker Managed Area" active={stored} />
+      </svg>
+
+      <div className="text-center text-[11px] text-slate-300 pb-2">
+        {inferenceOn && <span className="font-mono text-amber-200">Inference → /model_in_cont</span>}
+        {inferenceOn && trainingOn && <span className="mx-2 text-slate-600">·</span>}
+        {trainingOn && <span className="font-mono text-teal-200">Training → /data_in_cont</span>}
+        {stored && <span className="ml-2 text-sky-300">shared in my-ml-data</span>}
+      </div>
+      <div className="flex flex-wrap gap-2">
+        <button type="button" onClick={() => setFocus('inference')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${focus === 'inference' ? 'bg-amber-300 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>Inference Container</button>
+        <button type="button" onClick={() => setFocus('training')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${focus === 'training' ? 'bg-teal-300 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>Training Container</button>
+        <button type="button" onClick={() => setFocus('both')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${focus === 'both' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-400'}`}>Both share the volume</button>
       </div>
     </div>
   );

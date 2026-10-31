@@ -2,7 +2,9 @@ import React from 'react';
 import ChapterDeck from '../components/ChapterDeck';
 import CodeBlock from '../components/CodeBlock';
 import {
+  VisualBindMapDiagram,
   VisualBindMount,
+  VisualVolumeEngineDiagram,
   VisualEphemeral,
   VisualPracticalRun,
   VisualPracticalScript,
@@ -121,7 +123,7 @@ const slides = [
     id: 'bind-example',
     title: 'Implementing Bind Mounts',
     subtitle: 'Map src and data into the container',
-    Visual: VisualBindMount,
+    Visual: VisualBindMapDiagram,
     content: (
       <>
         <p>You can achieve this using a bind mount:</p>
@@ -251,7 +253,7 @@ docker run --name my-inference-app -v my-ml-data:/app/input-models my-other-imag
     id: 'volume-benefits',
     title: 'Benefits for ML Workflows',
     subtitle: 'Data outlives the container that wrote it',
-    Visual: VisualVolumeSharing,
+    Visual: VisualVolumeEngineDiagram,
     content: (
       <>
         <p>Using volumes offers several advantages, particularly for ML tasks:</p>

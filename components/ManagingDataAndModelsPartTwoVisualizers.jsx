@@ -76,58 +76,56 @@ export function VisualPerfSecurity() {
     <div className="w-full h-full flex flex-col items-center justify-center p-6 bg-slate-900 rounded-xl relative overflow-hidden">
       <div className="text-center font-bold text-slate-400 mb-8 uppercase tracking-widest text-xs">Performance & Security Implications (macOS / Windows)</div>
       <div className="w-full max-w-4xl flex gap-12 min-h-0">
-        <div className="w-1/2 bg-slate-950 border border-slate-700 rounded-xl p-6 relative flex flex-col shadow-2xl overflow-hidden">
+        <div className="w-1/2 bg-slate-950 border border-slate-700 rounded-xl p-6 pt-8 relative flex flex-col shadow-2xl overflow-hidden">
           <div className="absolute top-0 right-0 bg-yellow-600/20 text-yellow-400 text-[10px] font-bold px-3 py-1 rounded-bl-lg border-b border-l border-yellow-500/50">Performance Overhead</div>
-          <div className="flex-1 flex flex-col justify-center gap-6 relative min-h-[180px]">
-            <div className="bg-slate-800 border-2 border-slate-600 rounded p-3 text-center z-10 relative">
-              <span className="text-xs font-bold text-slate-300">Host OS (macOS/Win)</span>
-              <div className="absolute -bottom-4 right-4 bg-blue-600 text-white text-[8px] px-1 rounded z-20">Bind Data</div>
+          <div className="flex-1 flex flex-col justify-center gap-3 min-h-[200px]">
+            <div className="bg-slate-800 border-2 border-slate-600 rounded px-3 py-3 text-center relative">
+              <span className="text-xs font-bold text-slate-300 block px-16">Host OS (macOS/Win)</span>
+              <span className="absolute top-1.5 right-1.5 bg-blue-600 text-white text-[9px] px-1.5 py-0.5 rounded">Bind Data</span>
             </div>
-            <div className="w-full border-t-2 border-dashed border-red-500/50 my-1 relative">
-              <span className="absolute -top-3 left-1/2 -translate-x-1/2 bg-slate-950 px-2 text-[10px] text-red-400 font-bold tracking-widest uppercase">Virtual Machine Boundary</span>
+            <div className="flex items-center gap-2 px-1">
+              <span className="text-[10px] font-bold text-red-400 whitespace-nowrap">Slow (crosses VM)</span>
+              <div className="flex-1 border-t-2 border-dashed border-red-500/70" />
             </div>
-            <div className="bg-slate-800 border-2 border-emerald-600 rounded p-3 text-center z-10 relative">
-              <span className="text-xs font-bold text-emerald-400">Docker Linux VM</span>
-              <div className="absolute -top-4 right-4 bg-emerald-600 text-white text-[8px] px-1 rounded z-20">Volume Data</div>
+            <div className="text-center text-[10px] font-bold tracking-widest uppercase text-red-300">
+              Virtual Machine Boundary
             </div>
-            <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-              <path d="M 60,35 Q 20,80 60,135" fill="none" stroke="#ef4444" strokeWidth="2" strokeDasharray="4,4" />
-              <text x="70" y="90" fill="#ef4444" fontSize="10" fontWeight="bold">Slow (Crosses VM)</text>
-              <path d="M 280,120 A 20 20 0 1 1 280,150" fill="none" stroke="#10b981" strokeWidth="2" />
-              <text x="180" y="145" fill="#10b981" fontSize="10" fontWeight="bold">Fast (Native Linux)</text>
-            </svg>
+            <div className="flex items-center gap-2 px-1">
+              <div className="flex-1 border-t border-emerald-500/80" />
+              <span className="text-[10px] font-bold text-emerald-400 whitespace-nowrap">Fast (native Linux)</span>
+            </div>
+            <div className="bg-slate-800 border-2 border-emerald-600 rounded px-3 py-3 text-center relative">
+              <span className="text-xs font-bold text-emerald-400 block px-16">Docker Linux VM</span>
+              <span className="absolute top-1.5 right-1.5 bg-emerald-600 text-white text-[9px] px-1.5 py-0.5 rounded">Volume Data</span>
+            </div>
           </div>
-          <div className="mt-4 text-[10px] text-slate-400 text-center leading-tight">
+          <div className="mt-4 text-[10px] text-slate-400 text-center leading-snug">
             Reading 100,000 images from a Bind Mount crosses the VM boundary 100,000 times. Volumes stay inside the Linux VM, offering near-native speed.
           </div>
         </div>
 
-        <div className="w-1/2 bg-slate-950 border border-slate-700 rounded-xl p-6 relative flex flex-col shadow-2xl overflow-hidden">
+        <div className="w-1/2 bg-slate-950 border border-slate-700 rounded-xl p-6 pt-8 relative flex flex-col shadow-2xl overflow-hidden">
           <div className="absolute top-0 right-0 bg-red-600/20 text-red-400 text-[10px] font-bold px-3 py-1 rounded-bl-lg border-b border-l border-red-500/50">Security & Isolation</div>
-          <div className="flex-1 flex flex-col justify-center items-center gap-6 relative">
-            <div className="w-full bg-slate-800/50 border border-blue-500/30 p-3 rounded-lg flex items-center justify-between">
+          <div className="flex-1 flex flex-col justify-center gap-4">
+            <div className="w-full bg-slate-800/50 border border-blue-500/30 p-3 rounded-lg flex flex-col gap-2">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-red-900/50 flex items-center justify-center border border-red-500"><IconAlert className="w-4 h-4 text-red-400" /></div>
-                <div className="flex flex-col">
+                <div className="w-8 h-8 shrink-0 rounded-full bg-red-900/50 flex items-center justify-center border border-red-500"><IconAlert className="w-4 h-4 text-red-400" /></div>
+                <div className="flex flex-col min-w-0">
                   <span className="text-xs font-bold text-blue-300">Bind Mount</span>
                   <span className="text-[10px] text-slate-400">Directly exposes Host files.</span>
                 </div>
               </div>
-              <div className="text-[10px] text-red-300 max-w-[100px] text-right leading-tight">
-                Container root user can modify/delete sensitive host data!
-              </div>
+              <p className="text-[11px] text-red-300 leading-snug pl-11">Container root user can modify or delete sensitive host data.</p>
             </div>
-            <div className="w-full bg-slate-800/50 border border-emerald-500/30 p-3 rounded-lg flex items-center justify-between">
+            <div className="w-full bg-slate-800/50 border border-emerald-500/30 p-3 rounded-lg flex flex-col gap-2">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-emerald-900/50 flex items-center justify-center border border-emerald-500"><IconShield className="w-4 h-4 text-emerald-400" /></div>
-                <div className="flex flex-col">
+                <div className="w-8 h-8 shrink-0 rounded-full bg-emerald-900/50 flex items-center justify-center border border-emerald-500"><IconShield className="w-4 h-4 text-emerald-400" /></div>
+                <div className="flex flex-col min-w-0">
                   <span className="text-xs font-bold text-emerald-300">Docker Volume</span>
                   <span className="text-[10px] text-slate-400">Managed, isolated storage.</span>
                 </div>
               </div>
-              <div className="text-[10px] text-emerald-300 max-w-[100px] text-right leading-tight">
-                Abstracted away from core OS files. Highly secure.
-              </div>
+              <p className="text-[11px] text-emerald-300 leading-snug pl-11">Abstracted away from core OS files. Highly secure.</p>
             </div>
           </div>
         </div>
@@ -200,6 +198,45 @@ export function VisualCloudAuth({ initial = 'env' }) {
   );
 }
 
+function FlowPill({ x, y, w, h, line1, line2 }) {
+  const cx = x + w / 2;
+  return (
+    <g>
+      <rect x={x} y={y} width={w} height={h} rx={h / 2} fill="#ffffff" stroke="#0f172a" strokeWidth="1.6" />
+      <text x={cx} y={line2 ? y + h / 2 - 1 : y + h / 2 + 4} textAnchor="middle" fill="#0f172a" fontSize="12" fontWeight="700">{line1}</text>
+      {line2 && <text x={cx} y={y + h / 2 + 14} textAnchor="middle" fill="#0f172a" fontSize="11">{line2}</text>}
+    </g>
+  );
+}
+
+function FlowCylinder({ x, y, w, h, line1, line2 }) {
+  const rx = w / 2;
+  const ry = 12;
+  const cx = x + rx;
+  return (
+    <g>
+      <path d={`M ${x} ${y + ry} L ${x} ${y + h - ry} A ${rx} ${ry} 0 0 0 ${x + w} ${y + h - ry} L ${x + w} ${y + ry}`} fill="#ffffff" stroke="#0f172a" strokeWidth="1.5" />
+      <ellipse cx={cx} cy={y + h - ry} rx={rx} ry={ry} fill="#e2e8f0" stroke="#0f172a" strokeWidth="1.5" />
+      <ellipse cx={cx} cy={y + ry} rx={rx} ry={ry} fill="#ffffff" stroke="#0f172a" strokeWidth="1.5" />
+      <text x={cx} y={y + h / 2} textAnchor="middle" fill="#0f172a" fontSize="11" fontWeight="700">{line1}</text>
+      <text x={cx} y={y + h / 2 + 14} textAnchor="middle" fill="#0f172a" fontSize="11" fontWeight="700">{line2}</text>
+    </g>
+  );
+}
+
+function IamDoc({ x, y, w, h }) {
+  const fold = 16;
+  const cx = x + w / 2;
+  return (
+    <g>
+      <path d={`M ${x} ${y} H ${x + w - fold} L ${x + w} ${y + fold} V ${y + h} H ${x} Z`} fill="#ffffff" stroke="#0f172a" strokeWidth="1.5" />
+      <path d={`M ${x + w - fold} ${y} V ${y + fold} H ${x + w}`} fill="#e2e8f0" stroke="#0f172a" strokeWidth="1.5" />
+      <text x={cx} y={y + h / 2} textAnchor="middle" fill="#0f172a" fontSize="11" fontWeight="700">IAM Role</text>
+      <text x={cx} y={y + h / 2 + 14} textAnchor="middle" fill="#0f172a" fontSize="11" fontWeight="700">Permissions</text>
+    </g>
+  );
+}
+
 export function VisualIAMFlow() {
   const [step, setStep] = useState(0);
   const timers = useRef([]);
@@ -220,59 +257,55 @@ export function VisualIAMFlow() {
     setStep(0);
   };
 
+  const tone = (n, active) => (step === 0 ? '#0f172a' : step === n ? active : '#94a3b8');
+  const marker = (n, activeId) => (step === 0 ? 'url(#iamfig-ink)' : step === n ? `url(#${activeId})` : 'url(#iamfig-dim)');
+
   return (
-    <div className="w-full h-full flex flex-col p-6 bg-slate-900 rounded-xl relative overflow-hidden">
-      <div className="flex justify-between items-center mb-6 pr-36">
+    <div className="w-full h-full min-h-0 flex flex-col bg-slate-900 overflow-auto p-4">
+      <div className="flex items-center justify-between gap-3 mb-3 pr-36">
         <div className="text-xs font-bold text-slate-400 uppercase tracking-widest">Instance Metadata Service (IMDS) Flow</div>
-        <button type="button" onClick={step === 0 || step === 3 ? (step === 0 ? runFlow : reset) : undefined} className={`px-4 py-2 rounded text-xs font-bold transition-all ${step === 0 || step === 3 ? 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}`}>
-          {step === 0 ? 'Execute Flow' : step === 3 ? 'Reset' : 'Processing...'}
+        <button type="button" onClick={step === 0 || step === 3 ? (step === 0 ? runFlow : reset) : undefined} className={`px-4 py-2 rounded text-xs font-bold transition-all shrink-0 ${step === 0 || step === 3 ? 'bg-emerald-600 text-white hover:bg-emerald-500 shadow-lg' : 'bg-slate-700 text-slate-500 cursor-not-allowed'}`}>
+          {step === 0 ? 'Play steps' : step === 3 ? 'Reset' : 'Playing...'}
         </button>
       </div>
 
-      <div className="flex-1 relative border-2 border-slate-700 rounded-xl p-4 bg-slate-950 flex flex-col min-h-0">
-        <div className="absolute top-0 right-0 bg-slate-800 text-slate-400 text-[10px] font-bold px-3 py-1 rounded-bl-xl border-b border-l border-slate-700">Cloud VM (e.g., EC2)</div>
-        <div className="flex justify-between items-center h-full w-full relative z-10 px-8">
-          <div className="w-48 h-40 bg-blue-900/20 border-2 border-blue-500 rounded-xl flex flex-col items-center justify-center relative shadow-lg">
-            <div className="absolute -top-3 bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded font-bold">Docker Container</div>
-            <div className="bg-slate-800 border border-slate-600 px-3 py-1 rounded text-xs text-white mb-4">ML Script</div>
-            <div className="bg-blue-800/50 border border-blue-400 px-3 py-1.5 rounded text-xs text-blue-200 font-bold">boto3 (AWS SDK)</div>
-          </div>
-          <div className="w-48 h-24 bg-emerald-900/20 border-2 border-emerald-500 border-dashed rounded-xl flex flex-col items-center justify-center relative shadow-[0_0_20px_rgba(16,185,129,0.2)]">
-            <div className="absolute -top-3 bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded font-bold">Instance Metadata Service</div>
-            <div className="text-[10px] text-emerald-300 font-mono text-center">169.254.169.254<br />(Local API)</div>
-          </div>
-          <div className="w-40 h-40 bg-purple-900/20 border-2 border-purple-500 rounded-xl flex flex-col items-center justify-center relative shadow-lg">
-            <div className="absolute -top-3 bg-purple-600 text-white text-[10px] px-2 py-0.5 rounded font-bold">Cloud S3 Bucket</div>
-            <IconCloud className="w-12 h-12 text-purple-400" />
-          </div>
-        </div>
+      <svg viewBox="0 0 1000 400" className="w-full flex-1 min-h-[280px]">
+        <defs>
+          <marker id="iamfig-ink" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#0f172a" /></marker>
+          <marker id="iamfig-dim" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#94a3b8" /></marker>
+          <marker id="iamfig-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#2563eb" /></marker>
+          <marker id="iamfig-green" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#059669" /></marker>
+          <marker id="iamfig-purple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#7c3aed" /></marker>
+        </defs>
 
-        <svg className="absolute inset-0 w-full h-full pointer-events-none z-0">
-          <defs>
-            <marker id="iam-arrow-blue" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#3b82f6" /></marker>
-            <marker id="iam-arrow-emerald" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#10b981" /></marker>
-            <marker id="iam-arrow-purple" markerWidth="8" markerHeight="6" refX="7" refY="3" orient="auto"><polygon points="0 0, 8 3, 0 6" fill="#a855f7" /></marker>
-          </defs>
-          {step >= 1 && (
-            <>
-              <path d="M 230,130 L 370,130" fill="none" stroke="#3b82f6" strokeWidth="2" strokeDasharray="4,4" className="animate-[dash_1s_linear_infinite]" markerEnd="url(#iam-arrow-blue)" />
-              <text x="250" y="120" fill="#93c5fd" fontSize="10" fontWeight="bold">1. SDK requests Token</text>
-            </>
-          )}
-          {step >= 2 && (
-            <>
-              <path d="M 370,160 L 230,160" fill="none" stroke="#10b981" strokeWidth="2" strokeDasharray="4,4" className="animate-[dash_1s_linear_infinite_reverse]" markerEnd="url(#iam-arrow-emerald)" />
-              <text x="240" y="175" fill="#6ee7b7" fontSize="10" fontWeight="bold">2. Returns Temp Token</text>
-            </>
-          )}
-          {step === 3 && (
-            <>
-              <path d="M 180,210 Q 300,300 620,180" fill="none" stroke="#a855f7" strokeWidth="3" strokeDasharray="8,8" className="animate-[dash_1s_linear_infinite]" markerEnd="url(#iam-arrow-purple)" />
-              <text x="350" y="250" fill="#d8b4fe" fontSize="10" fontWeight="bold">3. Authed API Call (using Temp Token)</text>
-            </>
-          )}
-        </svg>
-      </div>
+        <rect x="12" y="36" width="318" height="156" rx="6" fill="#bae6fd" stroke="#0369a1" strokeWidth="1.5" />
+        <text x="171" y="58" textAnchor="middle" fill="#0f172a" fontSize="13" fontWeight="700">Docker Container</text>
+        <FlowPill x={28} y={96} w={112} h={52} line1="ML Application" />
+        <text x="156" y="112" textAnchor="middle" fill="#0f172a" fontSize="11" fontWeight="700">Uses</text>
+        <path d="M 178 122 L 198 122" fill="none" stroke="#0f172a" strokeWidth="1.5" markerEnd="url(#iamfig-ink)" />
+        <FlowPill x={202} y={96} w={112} h={52} line1="SDK" line2="(boto3, etc.)" />
+
+        <rect x="600" y="16" width="384" height="186" rx="4" fill="#e2e8f0" stroke="#64748b" strokeWidth="1.5" />
+        <text x="792" y="38" textAnchor="middle" fill="#334155" fontSize="12">Cloud Instance (e.g., EC2, GCE)</text>
+        <FlowCylinder x={618} y={64} w={156} h={86} line1="Instance Metadata" line2="Service" />
+        <text x="825" y="78" textAnchor="middle" fill="#0f172a" fontSize="10" fontWeight="700">Provides</text>
+        <text x="825" y="92" textAnchor="middle" fill="#0f172a" fontSize="10" fontWeight="700">Temporary</text>
+        <text x="825" y="106" textAnchor="middle" fill="#0f172a" fontSize="10" fontWeight="700">Credentials</text>
+        <path d="M 786 124 H 868" fill="none" stroke="#0f172a" strokeWidth="1.5" strokeDasharray="3 3" markerEnd="url(#iamfig-ink)" />
+        <IamDoc x={876} y={68} w={90} h={84} />
+
+        <path d="M 618 104 L 322 104" fill="none" stroke={tone(2, '#059669')} strokeWidth={step === 2 ? 2.5 : 1.6} markerEnd={marker(2, 'iamfig-green')} />
+        <text x="470" y="94" textAnchor="middle" fill={tone(2, '#059669')} fontSize="11" fontWeight="700">2. Returns Temporary Credentials</text>
+
+        <path d="M 322 140 L 618 140" fill="none" stroke={tone(1, '#2563eb')} strokeWidth={step === 1 ? 2.5 : 1.6} markerEnd={marker(1, 'iamfig-blue')} />
+        <text x="470" y="130" textAnchor="middle" fill={tone(1, '#2563eb')} fontSize="11" fontWeight="700">1. Requests Credentials</text>
+
+        <path d="M 330 172 C 430 230, 520 310, 618 318" fill="none" stroke={tone(3, '#7c3aed')} strokeWidth={step === 3 ? 2.5 : 1.6} markerEnd={marker(3, 'iamfig-purple')} />
+        <text x="28" y="224" fill={tone(3, '#7c3aed')} fontSize="12" fontWeight="700">3. Accesses Storage</text>
+        <text x="28" y="242" fill={tone(3, '#7c3aed')} fontSize="12" fontWeight="700">(using Credentials)</text>
+
+        <FlowCylinder x={618} y={268} w={210} h={100} line1="Cloud Storage" line2="(S3, GCS, etc.)" />
+      </svg>
     </div>
   );
 }
