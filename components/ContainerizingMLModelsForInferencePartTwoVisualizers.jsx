@@ -902,6 +902,121 @@ const bloatedDiet = {
   useLiteRuntime: false,
 };
 
+export function VisualWhyStages() {
+  const [view, setView] = useState('rocket');
+  const [ship, setShip] = useState('rocket');
+  const fat = ship === 'factory';
+
+  return (
+    <div className="w-full h-full min-h-0 flex flex-col bg-slate-900 overflow-auto p-4">
+      {view === 'rocket' && (
+        <div className="flex-1 flex flex-col justify-center gap-3 min-h-[240px]">
+          <div className="grid grid-cols-1 sm:grid-cols-[1fr_auto_1fr] gap-3 items-stretch">
+            <div className="rounded-xl border border-amber-700/70 bg-amber-950/50 p-3">
+              <div className="text-[10px] font-bold uppercase tracking-wide text-amber-300">Stage 1 · the factory</div>
+              <ul className="mt-2 space-y-1 text-[12px] text-amber-50">
+                <li>gcc, g++, make</li>
+                <li>headers and SDKs</li>
+                <li>pip compiling extensions</li>
+              </ul>
+              <p className="mt-3 text-[11px] text-amber-200/80">Huge, messy, and needed to assemble the model server. It stays on the build machine.</p>
+            </div>
+            <div className="flex items-center justify-center text-center px-1">
+              <div>
+                <div className="text-sky-300 text-lg leading-none">→</div>
+                <div className="mt-1 text-[10px] font-bold text-sky-200">Roll out only the rocket</div>
+              </div>
+            </div>
+            <div className="rounded-xl border border-emerald-500 bg-emerald-950/40 p-3">
+              <div className="text-[10px] font-bold uppercase tracking-wide text-emerald-300">Stage 2 · the rocket</div>
+              <ul className="mt-2 space-y-1 text-[12px] text-emerald-50">
+                <li>Python runtime</li>
+                <li>installed packages</li>
+                <li>app and model</li>
+              </ul>
+              <p className="mt-3 text-[11px] text-emerald-100">This is what production launches. The factory does not come with it.</p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {view === 'download' && (
+        <div className="flex-1 flex flex-col justify-center gap-3 min-h-[240px]">
+          <div className="flex flex-wrap items-center justify-between gap-2 pr-36">
+            <div className="text-[11px] text-slate-400">Built once. Downloaded again on every new server.</div>
+            <div className="flex gap-2">
+              <button type="button" onClick={() => setShip('factory')} className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${fat ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>Ship the factory</button>
+              <button type="button" onClick={() => setShip('rocket')} className={`px-2.5 py-1 rounded-lg text-[11px] font-bold ${!fat ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400'}`}>Ship the rocket</button>
+            </div>
+          </div>
+          <div className="grid grid-cols-5 gap-2">
+            {Array.from({ length: 10 }, (_, i) => (
+              <div key={i} className={`rounded-lg border px-1.5 py-2 text-center ${fat ? 'border-amber-600/70 bg-amber-950/40' : 'border-emerald-600/70 bg-emerald-950/30'}`}>
+                <div className="text-[10px] text-slate-400">server {i + 1}</div>
+                <div className={`mt-1 text-[12px] font-bold ${fat ? 'text-amber-200' : 'text-emerald-200'}`}>{fat ? '5 GB' : '500 MB'}</div>
+              </div>
+            ))}
+          </div>
+          <p className={`text-center text-[12px] ${fat ? 'text-amber-200' : 'text-emerald-200'}`}>
+            {fat ? '10 servers each pull the compilers and SDKs.' : '10 servers each pull only the runtime image.'}
+          </p>
+        </div>
+      )}
+
+      {view === 'security' && (
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 min-h-[240px] content-center">
+          <div className="rounded-xl border border-rose-500/70 bg-rose-950/30 p-3">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-rose-300">Single stage · breach</div>
+            <div className="mt-2 text-sm font-semibold text-white">Running container</div>
+            <ul className="mt-2 space-y-1 text-[12px] text-rose-100">
+              <li>your API</li>
+              <li>gcc, g++, make</li>
+              <li>headers</li>
+            </ul>
+            <p className="mt-3 text-[11px] text-rose-200">A breach includes a compiler, ready to build more code.</p>
+          </div>
+          <div className="rounded-xl border border-emerald-500/70 bg-emerald-950/30 p-3">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-emerald-300">Stage 2 · breach</div>
+            <div className="mt-2 text-sm font-semibold text-white">Running container</div>
+            <ul className="mt-2 space-y-1 text-[12px] text-emerald-100">
+              <li>your API</li>
+              <li>installed packages</li>
+              <li>the model</li>
+            </ul>
+            <p className="mt-3 text-[11px] text-emerald-200">The compilers stayed in the factory. There is nothing here to compile with.</p>
+          </div>
+        </div>
+      )}
+
+      {view === 'cicd' && (
+        <div className="flex-1 flex flex-col justify-center gap-3 min-h-[240px]">
+          <div className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-[12px] text-slate-200">
+            Commit: change one line in <span className="font-mono text-teal-200">main.py</span>
+          </div>
+          <div className="space-y-3">
+            <div>
+              <div className="flex justify-between text-[11px] text-amber-200 mb-1"><span>Tools glued to the runtime</span><span>rebuild gcc, pip, and the app</span></div>
+              <div className="h-3 rounded-full bg-slate-800 overflow-hidden"><div className="h-full w-[92%] bg-amber-500" /></div>
+            </div>
+            <div>
+              <div className="flex justify-between text-[11px] text-emerald-200 mb-1"><span>Install cached in the builder</span><span>final stage copies the new code</span></div>
+              <div className="h-3 rounded-full bg-slate-800 overflow-hidden"><div className="h-full w-[28%] bg-emerald-500" /></div>
+            </div>
+          </div>
+          <p className="text-center text-[12px] text-slate-300">The heavy install does not run again just because the app changed.</p>
+        </div>
+      )}
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button type="button" onClick={() => setView('rocket')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${view === 'rocket' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-400'}`}>Factory and rocket</button>
+        <button type="button" onClick={() => setView('download')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${view === 'download' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-400'}`}>10 servers download it</button>
+        <button type="button" onClick={() => setView('security')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${view === 'security' ? 'bg-rose-600 text-white' : 'bg-slate-800 text-slate-400'}`}>What a breach finds</button>
+        <button type="button" onClick={() => setView('cicd')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${view === 'cicd' ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400'}`}>A one-line commit</button>
+      </div>
+    </div>
+  );
+}
+
 export function VisualImageWeight() {
   return <VisualMultiStageArchitecture initialMode="single" />;
 }

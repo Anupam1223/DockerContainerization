@@ -19,6 +19,7 @@ import {
   VisualPrune,
   VisualStageWalk,
   VisualTrainVsInfer,
+  VisualWhyStages,
 } from '../components/ContainerizingMLModelsForInferencePartTwoVisualizers';
 
 const C = ({ children }) => <span className="font-mono text-[13px] text-teal-200">{children}</span>;
@@ -57,6 +58,22 @@ const slides = [
           <li><strong>Copying Artifacts:</strong> The critical step is using the <R>COPY --from=&lt;stage_name&gt;</R> instruction in the final stage. This command copies specific files or directories from the designated earlier stage (e.g., <R>builder</R>) to the final stage&apos;s filesystem.</li>
         </ol>
         <p>This process ensures that the final image only includes the runtime application, its direct dependencies, and any necessary data files, discarding the intermediate build environment and its associated bloat.</p>
+      </div>
+    ),
+  },
+  {
+    id: 'why-one-image',
+    title: 'Why Two Stages, One Image',
+    subtitle: 'You launch the rocket, not the factory',
+    Visual: VisualWhyStages,
+    content: (
+      <div className="space-y-3 text-sm text-gray-300 leading-relaxed">
+        <h3 className="text-base font-semibold text-white">Why Two Stages, One Image</h3>
+        <p>If you are building the image from scratch either way, why split it into two stages? The split is not for the one build on your laptop. It is for what happens after that build, every time the image is used.</p>
+        <p><strong>Downloading, not building.</strong> You build once. In production the image is downloaded again whenever a new server starts, a cluster scales, or a deploy rolls out. A single-stage image can be 3 GB to 5 GB because it still carries compilers and SDKs. Pulling that onto 10 machines is slow. A multi-stage image that dropped the build tools might be about 500 MB, and that download finishes in seconds.</p>
+        <p><strong>What a breach finds.</strong> Libraries such as PyTorch or a custom extension often need <R>gcc</R>, <R>g++</R>, and headers only so <C>pip install</C> can compile. Leave those tools in the running container and anyone who gets into the app has a compiler sitting there. Stage 2 copies the finished packages and leaves the compilers in the discarded stage.</p>
+        <p><strong>What CI rebuilds.</strong> A pipeline runs on every commit. If the build tools are glued to the runtime, a one-line code change still walks through the heavy install. With the stages split, that install stays cached in the builder, and the final stage only picks up the new code.</p>
+        <p>Stage 1 is the factory: cranes, torches, and the engineers who assemble the rocket. Stage 2 is the rocket. You do not fly the factory. You roll the lightweight rocket out to the launchpad, and that is the image production runs.</p>
       </div>
     ),
   },

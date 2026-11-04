@@ -15,6 +15,7 @@ import {
   VisualPs,
   VisualRoutes,
   VisualRun,
+  VisualSamePredict,
   VisualTest,
   VisualTiming,
   VisualTree,
@@ -509,6 +510,23 @@ CMD ["gunicorn", "--bind", "0.0.0.0:5000", "app:app"]`}</CodeBlock>
           <li><R>COPY --from=builder /install /usr/local</R>: This is the significant part. It copies <em>only</em> the contents of the <R>/install</R> directory (where our dependencies were installed) from the <R>builder</R> stage into the final image&apos;s standard library location (<R>/usr/local</R>). Build tools and caches from the <R>builder</R> stage are discarded.</li>
           <li><R>COPY app.py .</R>, <R>COPY model.pkl .</R>: Copies the necessary application files.</li>
         </ol>
+      </div>
+    ),
+  },
+  {
+    id: 'why-optimize',
+    title: 'Why Build It Again',
+    subtitle: 'Same /predict. The image you ship is the part that changes.',
+    Visual: VisualSamePredict,
+    content: (
+      <div className="space-y-3 text-sm text-gray-300 leading-relaxed">
+        <h3 className="text-base font-semibold text-white">Why Build It Again</h3>
+        <p>The container you just tested is finished as an API. <C>curl</C> to <R>/predict</R> and <R>/health</R> already works. A multi-stage build does not add a second service, and it does not change that request.</p>
+        <p>Building once and building in stages both end with an image that runs <C>gunicorn</C> on port 5000. The run command and the JSON you get back can be identical. What is not identical is the file those commands start.</p>
+        <p><R>ml-inference-api:basic</R> is the image from the single <R>FROM</R>. Pip installed into that image, and <R>COPY . .</R> brought the project in with it. Whatever the install needed stays in the layers of the image you would copy to another machine. The API is correct, and the download is larger than the API requires.</p>
+        <p>The optimized Dockerfile does the install in a stage you never run. Packages land in <R>/install</R> on the builder. The tag <R>ml-inference-api:optimized</R> starts over from <R>python:3.9-slim</R> and copies only that directory, plus <R>app.py</R> and <R>model.pkl</R>. <C>docker build -t ml-inference-api:optimized .</C> still produces one image. The builder is not a container you start.</p>
+        <p>That build runs on the machine where you type <C>docker build</C>: your laptop in this exercise, or a CI runner later. That machine does spend the disk. It pulls <R>python:3.9</R> for the builder and <R>python:3.9-slim</R> for the final stage, and Docker keeps the builder layers in a local cache. The cache is not the tag. <C>docker push</C> uploads <R>ml-inference-api:optimized</R> only, and every other server pulls only that tag. The bulky stage stays where the build happened. <C>docker builder prune</C> can delete the cache later; the small tag remains.</p>
+        <p>So this step is not a second version of the exercise. It is the same Flask app in a smaller image. The next slide builds that tag, compares the two sizes, and sends the same <C>curl</C> to the smaller one.</p>
       </div>
     ),
   },

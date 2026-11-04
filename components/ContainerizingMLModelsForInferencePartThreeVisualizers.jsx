@@ -772,6 +772,90 @@ function VisualHandsOnMultiStageOptimize() {
   );
 }
 
+export function VisualSamePredict() {
+  const [view, setView] = useState('predict');
+
+  return (
+    <div className="w-full h-full min-h-0 flex flex-col bg-slate-900 overflow-auto p-4">
+      <div className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-[11px] text-slate-300">
+        curl -X POST http://localhost:5001/predict -d &apos;{`{"features":[5.1,3.5,1.4,0.2]}`}&apos;
+      </div>
+
+      {view === 'predict' && (
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 min-h-[200px] content-center">
+          {[
+            ['ml-inference-api:basic', '465 MB', 'the image you just tested'],
+            ['ml-inference-api:optimized', '218 MB', 'the image the next slide runs'],
+          ].map(([tag, size, note]) => (
+            <div key={tag} className="rounded-xl border border-emerald-700/60 bg-emerald-950/30 p-3">
+              <div className="font-mono text-[11px] text-teal-200">{tag}</div>
+              <div className="mt-1 text-[10px] text-slate-400">{note}</div>
+              <pre className="mt-3 rounded-lg bg-slate-950 border border-emerald-800 p-2 text-[12px] text-emerald-200">{`{"prediction":[0]}`}</pre>
+              <div className="mt-2 text-[11px] text-slate-300">Same gunicorn command. Same port. {size} on disk.</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {view === 'where' && (
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 min-h-[200px]">
+          <div className="rounded-xl border border-amber-700/70 bg-amber-950/40 p-3">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-amber-300">Where docker build runs</div>
+            <div className="mt-2 text-sm font-semibold text-white">Your laptop, or CI</div>
+            <ul className="mt-2 space-y-1 text-[12px] text-amber-50">
+              <li>python:3.9 for the builder</li>
+              <li>python:3.9-slim for the final stage</li>
+              <li>builder layers kept in the local cache</li>
+            </ul>
+            <p className="mt-3 text-[11px] text-amber-100">This disk is used. It is not what other machines download.</p>
+          </div>
+          <div className="rounded-xl border border-emerald-600/70 bg-emerald-950/30 p-3">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-emerald-300">What every server pulls</div>
+            <div className="mt-2 text-sm font-semibold text-white">ml-inference-api:optimized</div>
+            <ul className="mt-2 space-y-1 text-[12px] text-emerald-50">
+              <li>the last stage only</li>
+              <li>218 MB, not the builder</li>
+              <li>docker push sends this tag</li>
+            </ul>
+            <p className="mt-3 text-[11px] text-emerald-100">docker builder prune deletes the local cache. The tag you run stays.</p>
+          </div>
+        </div>
+      )}
+
+      {view === 'cargo' && (
+        <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-3 mt-3 min-h-[200px]">
+          <div className="rounded-xl border border-amber-700/70 bg-amber-950/40 p-3">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-amber-300">basic · 465 MB · you can run this</div>
+            <ul className="mt-2 space-y-1 text-[12px] text-amber-50">
+              <li>python:3.9-slim</li>
+              <li>pip install left inside this image</li>
+              <li>COPY . . brought the whole directory</li>
+              <li>app.py, model.pkl, and any build leftovers</li>
+            </ul>
+            <p className="mt-3 text-[11px] text-amber-100">This is a real image. Another machine that pulls it downloads all of that.</p>
+          </div>
+          <div className="rounded-xl border border-emerald-600/70 bg-emerald-950/30 p-3">
+            <div className="text-[10px] font-bold uppercase tracking-wide text-emerald-300">optimized · 218 MB · you run this instead</div>
+            <ul className="mt-2 space-y-1 text-[12px] text-emerald-50">
+              <li>python:3.9-slim, started empty</li>
+              <li>/install copied to /usr/local</li>
+              <li>app.py and model.pkl only</li>
+              <li>the builder stage is not in this tag</li>
+            </ul>
+            <p className="mt-3 text-[11px] text-emerald-100">You never docker run the builder. It existed so the packages could be installed, then only that folder was kept.</p>
+          </div>
+        </div>
+      )}
+
+      <div className="mt-3 flex flex-wrap gap-2">
+        <button type="button" onClick={() => setView('predict')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${view === 'predict' ? 'bg-emerald-600 text-white' : 'bg-slate-800 text-slate-400'}`}>Same /predict</button>
+        <button type="button" onClick={() => setView('cargo')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${view === 'cargo' ? 'bg-sky-600 text-white' : 'bg-slate-800 text-slate-400'}`}>What got smaller</button>
+        <button type="button" onClick={() => setView('where')} className={`px-3 py-1.5 rounded-lg text-xs font-bold ${view === 'where' ? 'bg-amber-500 text-slate-950' : 'bg-slate-800 text-slate-400'}`}>Where the space is</button>
+      </div>
+    </div>
+  );
+}
+
 export function VisualProbe() {
   return <VisualHealthCheckFundamentals initialState="missing_model" />;
 }
